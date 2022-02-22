@@ -1311,7 +1311,7 @@ ngx_http_v2_state_headers(ngx_http_v2_connection_t *h2c, u_char *pos,
                               * cscf->large_client_header_buffers.num;
 
     ngx_log_debug3(NGX_LOG_DEBUG_HTTP, h2c->connection->log, 0,
-		    "http2-extra: state.header_limit: %i, large_client_header_buffers.num: %i, .size %i", h2c->state.header_limit, cscf->large_client_header_buffers.num, cscf->large_client_header_buffers.size);
+        "http2-extra: large_client_header_buffers num: %i * size %i = header_limit: %i", cscf->large_client_header_buffers.num, cscf->large_client_header_buffers.size, h2c->state.header_limit);
 
     h2scf = ngx_http_get_module_srv_conf(h2c->http_connection->conf_ctx,
                                          ngx_http_v2_module);
@@ -1769,7 +1769,7 @@ ngx_http_v2_state_process_header(ngx_http_v2_connection_t *h2c, u_char *pos,
 
     len = header->name.len + header->value.len;
     ngx_log_debug4(NGX_LOG_DEBUG_HTTP, h2c->connection->log, 0,
-		    "http2-extra: header name \"%V\" name.len: %i, value.len: %i, total len: %i", &header->name, header->name.len, header->value.len, len);
+        "http2-extra: header name \"%V\" name.len: %i, value.len: %i, total len: %i", &header->name, header->name.len, header->value.len, len);
 
     if (len > h2c->state.header_limit) {
         ngx_log_error(NGX_LOG_INFO, h2c->connection->log, 0,
@@ -1778,9 +1778,10 @@ ngx_http_v2_state_process_header(ngx_http_v2_connection_t *h2c, u_char *pos,
         return ngx_http_v2_connection_error(h2c, NGX_HTTP_V2_ENHANCE_YOUR_CALM);
     }
 
+    ngx_log_debug3(NGX_LOG_DEBUG_HTTP, h2c->connection->log, 0,
+        "http2-extra: header_limit reduced by %i to %i (was: %i)", len, h2c->state.header_limit - len, h2c->state.header_limit);
+
     h2c->state.header_limit -= len;
-    ngx_log_debug2(NGX_LOG_DEBUG_HTTP, h2c->connection->log, 0,
-		    "http2-extra: header_limit reduced by %i bytes to %i bytes", len, h2c->state.header_limit);
 
     if (h2c->state.index) {
         if (ngx_http_v2_add_header(h2c, header) != NGX_OK) {
@@ -3563,9 +3564,6 @@ ngx_http_v2_parse_path(ngx_http_request_t *r, ngx_str_t *value)
 
     r->uri_start = value->data;
     r->uri_end = value->data + value->len;
-
-    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
-                   "http2-extra uri len: %i", value->len);
 
     if (ngx_http_parse_uri(r) != NGX_OK) {
         ngx_log_error(NGX_LOG_INFO, r->connection->log, 0,
