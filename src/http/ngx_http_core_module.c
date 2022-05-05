@@ -1487,7 +1487,7 @@ ngx_http_core_find_static_location(ngx_http_request_t *r,
         }
 
         ngx_log_debug2(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
-                       "test location: \"%*s\"",
+                       "xxxcory 1490 test location: \"%*s\"",
                        (size_t) node->len, node->name);
 
         n = (len <= (size_t) node->len) ? len : node->len;
@@ -1503,6 +1503,7 @@ ngx_http_core_find_static_location(ngx_http_request_t *r,
         if (len > (size_t) node->len) {
 
             if (node->inclusive) {
+                ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "xxxcory node->inclusive 1506");
 
                 r->loc_conf = node->inclusive->loc_conf;
                 rv = NGX_AGAIN;
@@ -1524,10 +1525,12 @@ ngx_http_core_find_static_location(ngx_http_request_t *r,
         if (len == (size_t) node->len) {
 
             if (node->exact) {
+                ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "xxxcory node->exact 1528");
                 r->loc_conf = node->exact->loc_conf;
                 return NGX_OK;
 
             } else {
+                ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "xxxcory NOT node->exact 1533");
                 r->loc_conf = node->inclusive->loc_conf;
                 return NGX_AGAIN;
             }
@@ -1536,6 +1539,7 @@ ngx_http_core_find_static_location(ngx_http_request_t *r,
         /* len < node->len */
 
         if (len + 1 == (size_t) node->len && node->auto_redirect) {
+            ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "xxxcory auto redirect");
 
             r->loc_conf = (node->exact) ? node->exact->loc_conf:
                                           node->inclusive->loc_conf;
@@ -2584,7 +2588,7 @@ ngx_http_named_location(ngx_http_request_t *r, ngx_str_t *name)
         for (clcfp = cscf->named_locations; *clcfp; clcfp++) {
 
             ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
-                           "test location: \"%V\"", &(*clcfp)->name);
+                           "xxxcory 2587 test location: \"%V\"", &(*clcfp)->name);
 
             if (name->len != (*clcfp)->name.len
                 || ngx_strncmp(name->data, (*clcfp)->name.data, name->len) != 0)

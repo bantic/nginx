@@ -329,16 +329,20 @@ ngx_http_header_filter(ngx_http_request_t *r)
         && r->headers_out.location->value.data[0] == '/'
         && clcf->absolute_redirect)
     {
+        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "xxxcory 332");
         r->headers_out.location->hash = 0;
 
         if (clcf->server_name_in_redirect) {
+            ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "xxxcory server_name_in_redirect");
             cscf = ngx_http_get_module_srv_conf(r, ngx_http_core_module);
             host = cscf->server_name;
 
         } else if (r->headers_in.server.len) {
+            ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "xxxcory headers_in.server.len");
             host = r->headers_in.server;
 
         } else {
+            ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "xxxcory using addr");
             host.len = NGX_SOCKADDR_STRLEN;
             host.data = addr;
 

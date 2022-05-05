@@ -1134,6 +1134,7 @@ ngx_http_process_request_line(ngx_event_t *rev)
                     break;
                 }
 
+                ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "xxxcory setting host");
                 r->headers_in.server = host;
             }
 
